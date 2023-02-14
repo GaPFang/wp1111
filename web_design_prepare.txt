@@ -1,0 +1,80 @@
+yarn init -y
+
+insert following to "package.json":
+    "scripts": {
+        "start": "cd frontend && yarn start",
+        "server": "cd backend && yarn server"
+    },
+
+/////////////////////frontend/////////////////////
+
+yarn create react-app frontend
+yarn add axios @material-ui/core styled-components
+
+
+
+/////////////////////backend/////////////////////
+
+mkdir backend
+cd backend
+yarn init -y
+yarn add cors express nodemon
+yarn add -D @babel/cli @babel/core @babel/node @babel/preset-env
+
+add a file ".babelrc":
+    {
+        "presets": [
+            "@babel/preset-env"
+        ]
+    }
+
+insert following to "package.json":
+    "scripts": {
+        "server": "nodemon src/server.js --ext js --exec babel-node"
+    },
+
+add a file "./src/server.js":
+    import express from 'express';
+    const app = express();
+    const port = process.env.PORT || 4000;
+    app.get('/', (req, res) => {
+        res.send('Hello, World!');
+    });
+    app.listen(port, () =>
+        console.log(`Example app listening on port ${port}!`),
+    );
+
+if needing database:
+    1. in Atlas:
+        (1) create organization
+        (2) create project
+        (3) create cluster
+        (4) connect your application
+    
+    2. in command line:
+        (1) yarn add mongoose
+        (2) yarn add -D @babel/plugin-proposal-class-properties @babel/plugin-proposal-
+object-rest-spread @babel/plugin-transform-arrow-functions dotenv-
+defaults mongoose
+    
+    3. in codes:
+        (1) create ".env":
+            MONGO_URL=<the url copied from the Atlas>
+        (2) insert following to "server.js":
+            import mongoose from 'mongoose';
+            mongoose
+                .connect(process.env.MONGO_URL, {
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true
+                })
+                .then((res) => console.log("mongo db connection created"));
+
+    4. in command line:
+        (1) yarn add dotenv-defaults --save
+
+    5. in codes:
+        (1) create a file ".env.defaults":
+            MONGO_URL
+        (2) insert following to "server.js":
+            import dotenv from "dotenv-defaults";
+            dotenv.config();
